@@ -13,8 +13,9 @@ WORKDIR /code
 RUN pip install --upgrade pip
 COPY requirements.txt /code/
 RUN pip install -r requirements.txt
+RUN apt-get update && apt install -y netcat
 
 # Copy the Django project
 COPY . /code/
 
-
+ENTRYPOINT ["/code/entrypoint.sh"]

@@ -12,10 +12,10 @@ services:
       - POSTGRES_PASSWORD=123
 
   web:
-    build: .
-    command: ["./wait-for-it.sh", "db:5432", "--",
-      "gunicorn", "DockerDjangoAutenNginxGunicorn.wsgi:application", "--bind",
-      "0.0.0.0:8000" ]
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: gunicorn DockerDjangoAutenNginxGunicorn.wsgi:application --bind 0.0.0.0:8000
     restart: always
     volumes:
       - .:/code
@@ -26,5 +26,7 @@ services:
       - POSTGRES_DB=ddgn
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=123
+      - DB_HOST=db
+      - DB_PORT=5432
     depends_on:
       - db
