@@ -14,13 +14,13 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: config/django/Dockerfile
     command: gunicorn DockerDjangoAutenNginxGunicorn.wsgi:application --bind 0.0.0.0:8000
     restart: always
     volumes:
       - .:/code
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     environment:
       - DJANGO_SETTINGS_MODULE=DockerDjangoAutenNginxGunicorn.settings
       - POSTGRES_DB=ddgn
@@ -30,3 +30,16 @@ services:
       - DB_PORT=5432
     depends_on:
       - db
+
+  nginx:
+    build:
+      context: .
+      dockerfile: config/nginx/Dockerfile
+    restart: always
+    volumes:
+      - ./config/nginx:/etc/nginx/templates
+      - .:/code
+    ports:
+      - "80:80"
+    depends_on:
+      - web
